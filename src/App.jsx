@@ -1,13 +1,19 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./App.css";
 import Navigation from "./Components/Navigation";
+import Welcome from "./Components/Welcome";
 
 function App() {
-  const [count, setCount] = useState(0);
+  return (
+    <BrowserRouter>
+      {/* Navigation će se prikazivati na svim stranicama */}
+      <Navigation />
 
-  return <Navigation></Navigation>;
+      <Routes>
+        <Route path="/" element={<Welcome />} />
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
 export default App;

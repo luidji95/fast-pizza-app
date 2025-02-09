@@ -1,9 +1,18 @@
 import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  addToCart,
+  incrementQuantity,
+  decrementQuantity,
+  deleteFromChart,
+} from "../Redux/Slices/cartSlice";
 import "../Menu.css";
 
 const Menu = () => {
   const [menuItems, setMenuItems] = useState([]);
   const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch();
+  const cartItems = useSelector((state) => state.cart.cartItems);
 
   useEffect(() => {
     const fetchMenu = async () => {
@@ -34,17 +43,58 @@ const Menu = () => {
     <div className="menu-container">
       <h2>Our Menu</h2>
       <div className="menu-list">
-        {menuItems.map((item) => (
-          <div key={item.id} className="menu-item">
-            <img src={item.imageUrl} alt={item.name} />
-            <div className="menu-item-content">
-              <h3>{item.name}</h3>
-              <p>{item.ingredients?.join(", ")}</p>
-              <p className="price">${item.unitPrice}</p>
+        {menuItems.map((item) => {
+          const cartItem = cartItems.find((cart) => cart.id === item.id);
+
+          return (
+            <div key={item.id} className="menu-item">
+              <img src={item.imageUrl} alt={item.name} />
+              <div className="menu-item-content">
+                <h3>{item.name}</h3>
+                <p>{item.ingredients?.join(", ")}</p>
+
+                {/* 📌 Ako je proizvod u korpi, ovde prikazujemo Increment/Decrement */}
+                {cartItem ? (
+                  <div className="quantity-controls">
+                    <button
+                      className="quantity-btn"
+                      onClick={() => dispatch(decrementQuantity(item.id))}
+                    >
+                      -
+                    </button>
+                    <span className="quantity">{cartItem.quantity}</span>
+                    <button
+                      className="quantity-btn"
+                      onClick={() => dispatch(incrementQuantity(item.id))}
+                    >
+                      +
+                    </button>
+                    <button
+                      className="delete-btn"
+                      onClick={() => dispatch(deleteFromChart(item.id))}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                ) : (
+                  <p className="price">${item.unitPrice}</p> // 📌 Ako nije u korpi, prikazuje cenu
+                )}
+              </div>
+              <div className="menu-item-buttons">
+                {cartItem ? (
+                  <span className="price-tag">${item.unitPrice}</span> // 📌 Prikazujemo cenu umesto Add to Cart
+                ) : (
+                  <button
+                    className="add-to-cart-btn"
+                    onClick={() => dispatch(addToCart(item))}
+                  >
+                    Add to Cart
+                  </button>
+                )}
+              </div>
             </div>
-            <button>Add to Cart</button>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

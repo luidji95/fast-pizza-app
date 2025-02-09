@@ -57,7 +57,7 @@
 .menu-item-content .price {
   font-size: 1.1rem;
   font-weight: bold;
-  color: #ff4500;
+  color: #0e0501;
 }
 
 .menu-item button {
@@ -73,5 +73,103 @@
 }
 
 .menu-item button:hover {
+  background: #e6a700;
+}
+/* Dugmad za povećanje/smanjenje količine */
+.quantity-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.quantity-controls button {
+  background: #ffbb00;
+  color: black;
+  border: none;
+  padding: 5px 10px;
+  font-size: 1rem;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.quantity-controls button:hover {
+  background: #e6a700;
+}
+
+.quantity-controls span {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+/* 📌 Dugmad za povećanje/smanjenje količine */
+.quantity-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.quantity-btn {
+  background: #ffbb00;
+  color: black;
+  border: none;
+  padding: 5px 10px;
+  font-size: 1rem;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.quantity-btn:hover {
+  background: #e6a700;
+}
+
+/* 📌 Stil za broj količine */
+.quantity {
+  font-size: 1.2rem;
+  font-weight: bold;
+  width: 30px;
+  text-align: center;
+}
+
+/* 📌 Dugme DELETE */
+.delete-btn {
+  background: #ff4d4d;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  font-size: 0.9rem;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.delete-btn:hover {
+  background: #e63c3c;
+}
+
+/* 📌 Cena proizvoda u dugmetu */
+.price-tag {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #333;
+}
+
+/* 📌 Stil za dugme Add to Cart */
+.add-to-cart-btn {
+  background: #ffbb00;
+  color: black;
+  border: none;
+  padding: 8px 12px;
+  font-size: 1rem;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.add-to-cart-btn:hover {
   background: #e6a700;
 }

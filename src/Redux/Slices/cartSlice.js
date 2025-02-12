@@ -13,24 +13,24 @@ const cartSlice = createSlice({
       const existingItem = state.cartItems.find((i) => i.id === item.id);
 
       if (!existingItem) {
-        state.cartItems.push({ ...item, quantity: 1 }); // ✅ Dodajemo proizvod sa početnom količinom 1
+        state.cartItems.push({ ...item, quantity: 1 });
       }
     },
     incrementQuantity: (state, action) => {
       const item = state.cartItems.find((i) => i.id === action.payload);
       if (item) {
-        item.quantity += 1; // ✅ Povećavamo količinu
+        item.quantity += 1;
       }
     },
     decrementQuantity: (state, action) => {
       const item = state.cartItems.find((i) => i.id === action.payload);
       if (item) {
         if (item.quantity > 1) {
-          item.quantity -= 1; // ✅ Smanjujemo količinu
+          item.quantity -= 1;
         } else {
           state.cartItems = state.cartItems.filter(
             (i) => i.id !== action.payload
-          ); // ✅ Brišemo ako je 0
+          );
         }
       }
     },

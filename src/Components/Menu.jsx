@@ -53,7 +53,6 @@ const Menu = () => {
                 <h3>{item.name}</h3>
                 <p>{item.ingredients?.join(", ")}</p>
 
-                {/* 📌 Ako je proizvod u korpi, ovde prikazujemo Increment/Decrement */}
                 {cartItem ? (
                   <div className="quantity-controls">
                     <button

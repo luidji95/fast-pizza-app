@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { createSelector } from "@reduxjs/toolkit";
 
 const initialState = {
   cartItems: [],
@@ -12,8 +13,13 @@ const cartSlice = createSlice({
       const item = action.payload;
       const existingItem = state.cartItems.find((i) => i.id === item.id);
 
-      if (!existingItem) {
-        state.cartItems.push({ ...item, quantity: 1 });
+      if (existingItem) {
+        existingItem.quantity += 1;
+      } else {
+        state.cartItems.push({
+          ...item,
+          quantity: 1,
+        });
       }
     },
     incrementQuantity: (state, action) => {
@@ -22,6 +28,7 @@ const cartSlice = createSlice({
         item.quantity += 1;
       }
     },
+
     decrementQuantity: (state, action) => {
       const item = state.cartItems.find((i) => i.id === action.payload);
       if (item) {
@@ -39,6 +46,20 @@ const cartSlice = createSlice({
     },
   },
 });
+// export const selectTotalItems = createSelector(
+//   (state) => state.cart.cartItems,
+//   (cartItems) => cartItems.reduce((acc, item) => acc + item.quantity, 0)
+// );
+
+// // Selektor za ukupnu cenu
+// export const selectTotalPrice = createSelector(
+//   (state) => state.cart.cartItems,
+//   (cartItems) =>
+//     cartItems.reduce(
+//       (acc, item) => acc + item.quantity * parseFloat(item.price || 0),
+//       0
+//     )
+// );
 
 export const {
   addToCart,

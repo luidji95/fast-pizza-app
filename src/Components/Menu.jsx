@@ -76,12 +76,12 @@ const Menu = () => {
                     </button>
                   </div>
                 ) : (
-                  <p className="price">${item.unitPrice}</p> // 📌 Ako nije u korpi, prikazuje cenu
+                  <p className="price">${item.unitPrice}</p>
                 )}
               </div>
               <div className="menu-item-buttons">
                 {cartItem ? (
-                  <span className="price-tag">${item.unitPrice}</span> // 📌 Prikazujemo cenu umesto Add to Cart
+                  <span className="price-tag">${item.unitPrice}</span>
                 ) : (
                   <button
                     className="add-to-cart-btn"

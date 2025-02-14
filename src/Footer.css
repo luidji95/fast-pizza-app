@@ -1,0 +1,68 @@
+.footer-main {
+  position: fixed;
+  bottom: 0;
+  left: 0; /* Osigurava da footer ne "beži" na desno */
+  width: 100%;
+  background: black;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  font-size: 18px;
+  font-weight: bold;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
+  border-top: 3px solid rgba(255, 255, 255, 0.2);
+  box-sizing: border-box; /* Sprečava da padding utiče na širinu */
+}
+
+.cart-container {
+  position: relative;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  transition: transform 0.2s ease-in-out;
+}
+
+.cart-container:hover {
+  transform: scale(1.1);
+}
+
+.cart-icon {
+  font-size: 30px;
+  color: white;
+}
+
+.cart-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: #ff4b5c;
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 0 10px rgba(255, 75, 92, 0.8);
+}
+
+.total-price {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-size: 18px;
+  font-weight: bold;
+  transition: background 0.3s ease-in-out;
+}
+
+.total-price:hover {
+  background: rgba(255, 255, 255, 0.4);
+}

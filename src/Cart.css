@@ -1,0 +1,155 @@
+/* Glavni kontejner */
+.div-main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh;
+  background: #fff;
+}
+
+/* Sadržaj unutar korpe */
+.div-content {
+  width: 50%;
+  background: #ffffff;
+  padding: 20px 30px;
+  border-radius: 8px;
+  box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+  text-align: left;
+}
+
+/* Link za povratak */
+.back-link {
+  display: inline-block;
+  margin-bottom: 15px;
+  color: #ffb703;
+  font-size: 16px;
+  font-weight: bold;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.back-link:hover {
+  text-decoration: underline;
+}
+
+/* Naslov */
+h2 {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+/* Lista proizvoda u korpi */
+.cart-list {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 20px;
+}
+
+.cart-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f9f9f9;
+  padding: 12px 18px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Informacije o proizvodu */
+.item-info {
+  font-size: 18px;
+  font-weight: 500;
+  color: #333;
+}
+
+/* Kontejner za dugmiće */
+.item-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Dugmad */
+.quantity-btn {
+  border: none;
+  background: #ffb703;
+  color: white;
+  padding: 8px 12px;
+  font-size: 16px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.3s ease-in-out;
+}
+
+.quantity-btn:hover {
+  background: #e09c00;
+}
+
+.delete-btn {
+  border: none;
+  background: #ff3d3d;
+  color: white;
+  padding: 8px 14px;
+  font-size: 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s ease-in-out;
+  font-weight: bold;
+}
+
+.delete-btn:hover {
+  background: #d32f2f;
+}
+
+/* Dugmad za poručivanje i čišćenje korpe */
+.cart-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.order-btn {
+  background: #ffb703;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  font-size: 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.3s ease-in-out;
+  width: 150px;
+}
+
+.order-btn:hover {
+  background: #e09c00;
+}
+
+.clear-btn {
+  background: #d6d6d6;
+  color: #333;
+  border: none;
+  padding: 12px 20px;
+  font-size: 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.3s ease-in-out;
+}
+
+.clear-btn:hover {
+  background: #b3b3b3;
+}
+
+/* Prazna korpa */
+.empty-cart {
+  font-size: 18px;
+  font-weight: bold;
+  color: #777;
+  margin: 20px 0;
+  text-align: center;
+}

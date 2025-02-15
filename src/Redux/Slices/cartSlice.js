@@ -46,20 +46,19 @@ const cartSlice = createSlice({
     },
   },
 });
-// export const selectTotalItems = createSelector(
-//   (state) => state.cart.cartItems,
-//   (cartItems) => cartItems.reduce((acc, item) => acc + item.quantity, 0)
-// );
+export const selectTotalItems = createSelector(
+  (state) => state.cart.cartItems,
+  (cartItems) => cartItems.reduce((acc, item) => acc + item.quantity, 0)
+);
 
-// // Selektor za ukupnu cenu
-// export const selectTotalPrice = createSelector(
-//   (state) => state.cart.cartItems,
-//   (cartItems) =>
-//     cartItems.reduce(
-//       (acc, item) => acc + item.quantity * parseFloat(item.price || 0),
-//       0
-//     )
-// );
+export const selectTotalPrice = createSelector(
+  (state) => state.cart.cartItems,
+  (cartItems) =>
+    cartItems.reduce(
+      (acc, item) => acc + item.quantity * (parseFloat(item.unitPrice) || 0),
+      0
+    )
+);
 
 export const {
   addToCart,

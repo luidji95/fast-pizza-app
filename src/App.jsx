@@ -4,6 +4,8 @@ import store from "./Redux/store";
 import SharedLayout from "./SharedLayout";
 import Welcome from "./Components/Welcome";
 import Menu from "./Components/Menu";
+import Cart from "./Components/Cart";
+import CreateOreder from "./Components/CreateOreder";
 
 function App() {
   return (
@@ -13,6 +15,8 @@ function App() {
           <Route path="/" element={<SharedLayout />}>
             <Route index element={<Welcome />} />
             <Route path="menu" element={<Menu />} />
+            <Route path="cart" element={<Cart />} />
+            <Route path="createOreder" element={<CreateOreder />} />
           </Route>
         </Routes>
       </BrowserRouter>

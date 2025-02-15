@@ -1,21 +1,16 @@
 import { useSelector } from "react-redux";
+import { selectTotalItems, selectTotalPrice } from "../Redux/Slices/cartSlice";
 import "../Footer.css";
+import { useNavigate } from "react-router-dom";
 
 const Footer = () => {
-  const cartItems = useSelector((state) => state.cart.cartItems) || [];
-
-  console.log(cartItems);
-
-  const totalItems = cartItems.reduce((acc, item) => acc + item.quantity, 0);
-
-  const totalPrice = cartItems.reduce(
-    (acc, item) => acc + item.quantity * parseFloat(item.price || 0),
-    0
-  );
+  const totalItems = useSelector(selectTotalItems);
+  const totalPrice = useSelector(selectTotalPrice);
+  const navigate = useNavigate();
 
   return (
     <div className="footer-main">
-      <div className="cart-container">
+      <div className="cart-container" onClick={() => navigate("/cart")}>
         <i className="fas fa-shopping-cart cart-icon"></i>
         {totalItems > 0 && <span className="cart-badge">{totalItems}</span>}
       </div>

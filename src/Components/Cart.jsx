@@ -4,6 +4,7 @@ import {
   incrementQuantity,
   decrementQuantity,
   deleteFromChart,
+  clearCart,
 } from "../Redux/Slices/cartSlice";
 import "../Cart.css";
 
@@ -16,7 +17,7 @@ const Cart = () => {
   return (
     <div className="div-main">
       <div className="div-content">
-        <a onClick={() => navigate("/")} className="back-link">
+        <a onClick={() => navigate("/menu")} className="back-link">
           Back to menu
         </a>
         <h2>Your cart, {user ? user : "Guest"}</h2>
@@ -63,7 +64,9 @@ const Cart = () => {
           >
             Order pizza
           </button>
-          <button className="clear-btn">Clear Cart</button>
+          <button className="clear-btn" onClick={() => dispatch(clearCart())}>
+            Clear Cart
+          </button>
         </div>
       </div>
     </div>

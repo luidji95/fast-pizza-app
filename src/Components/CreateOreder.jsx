@@ -2,14 +2,57 @@ import { useSelector } from "react-redux";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { selectTotalPrice } from "../Redux/Slices/cartSlice";
+import { useDispatch } from "react-redux";
+import { setPhoneNumber, setAddress } from "../Redux/Slices/userSlice";
 import "../CreateOrder.css";
 
 const CreateOrder = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const totalPrice = useSelector(selectTotalPrice);
   const [isPriority, setIsPriority] = useState(false);
+  const phoneNumber = useSelector((state) => state.user.phoneNumber);
+  const address = useSelector((state) => state.user.address);
+  const userName = useSelector((state) => state.user.username);
+  const cartItems = useSelector((state) => state.cart.cartItems);
 
   const finalPrice = isPriority ? totalPrice + 3 : totalPrice;
+
+  const handleOrderSubmit = async () => {
+    const orderData = {
+      customer: userName,
+      phoneNumber: phoneNumber,
+      address: address,
+      cart: cartItems.map((item) => ({
+        pizzaId: item.id,
+        name: item.name,
+        quantity: item.quantity,
+        unitPrice: item.unitPrice,
+      })),
+      priority: isPriority,
+      totalPrice: finalPrice,
+    };
+
+    try {
+      const response = await fetch("https://example.com/api/orders", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(orderData),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to place order");
+      }
+
+      const data = await response.json();
+      console.log("Order successful!", data);
+      navigate(`/order/${data.orderId}`);
+    } catch (error) {
+      console.error("Error placing order:", error);
+    }
+  };
 
   return (
     <div className="order-page">
@@ -19,11 +62,7 @@ const CreateOrder = () => {
         <div className="order-form">
           <div className="order-field">
             <p className="order-label">First Name</p>
-            <input
-              type="text"
-              className="order-input"
-              placeholder="Enter your name"
-            />
+            <input type="text" value={userName} className="order-input" />
           </div>
 
           <div className="order-field">
@@ -32,6 +71,7 @@ const CreateOrder = () => {
               type="text"
               className="order-input"
               placeholder="Enter your phone number"
+              onChange={(e) => dispatch(setPhoneNumber(e.target.value))}
             />
           </div>
 
@@ -41,6 +81,7 @@ const CreateOrder = () => {
               type="text"
               className="order-input"
               placeholder="Enter your delivery address"
+              onChange={(e) => dispatch(setAddress(e.target.value))}
             />
           </div>
 
@@ -58,7 +99,7 @@ const CreateOrder = () => {
           </div>
         </div>
 
-        <button className="order-btn">
+        <button className="order-btn" onClick={handleOrderSubmit}>
           ORDER NOW FOR €{finalPrice.toFixed(2)}
         </button>
       </div>

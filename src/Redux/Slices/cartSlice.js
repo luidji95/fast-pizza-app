@@ -44,6 +44,9 @@ const cartSlice = createSlice({
     deleteFromChart: (state, action) => {
       state.cartItems = state.cartItems.filter((i) => i.id !== action.payload);
     },
+    clearCart: (state) => {
+      state.cartItems = [];
+    },
   },
 });
 export const selectTotalItems = createSelector(
@@ -65,5 +68,10 @@ export const {
   incrementQuantity,
   decrementQuantity,
   deleteFromChart,
+  clearCart,
 } = cartSlice.actions;
 export default cartSlice.reducer;
+
+// Videti kako napraviti POST request
+// Iz forme pokupiti inpute i poslati ih u obliku koji server ocekuje (ako oni ocekuju da se adresa polje zove adres kod mene se u statu ne moze zvati sreet)
+// Nakon uspesno responsa navigovati na posebnu stranicu sa tim order id-em i ostaviti prazno za sada

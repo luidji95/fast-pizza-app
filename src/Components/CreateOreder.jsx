@@ -1,56 +1,58 @@
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { selectTotalPrice } from "../Redux/Slices/cartSlice";
-import { useDispatch } from "react-redux";
-import { setPhoneNumber, setAddress } from "../Redux/Slices/userSlice";
+import { useEffect } from "react";
 import "../CreateOrder.css";
+import { setAddress, setPhoneNumber } from "../Redux/Slices/userSlice";
 
 const CreateOrder = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const totalPrice = useSelector(selectTotalPrice);
-  const [isPriority, setIsPriority] = useState(false);
+  const userName = useSelector((state) => state.user.username);
   const phoneNumber = useSelector((state) => state.user.phoneNumber);
   const address = useSelector((state) => state.user.address);
-  const userName = useSelector((state) => state.user.username);
   const cartItems = useSelector((state) => state.cart.cartItems);
+  const [isPriority, setIsPriority] = useState(false);
 
   const finalPrice = isPriority ? totalPrice + 3 : totalPrice;
 
-  const handleOrderSubmit = async () => {
+  const handleOrder = async () => {
     const orderData = {
       customer: userName,
-      phoneNumber: phoneNumber,
+      phone: phoneNumber,
       address: address,
       cart: cartItems.map((item) => ({
         pizzaId: item.id,
         name: item.name,
         quantity: item.quantity,
         unitPrice: item.unitPrice,
+        totalPrice: item.unitPrice * item.quantity,
       })),
       priority: isPriority,
-      totalPrice: finalPrice,
     };
 
     try {
-      const response = await fetch("https://example.com/api/orders", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(orderData),
-      });
+      const response = await fetch(
+        "https://react-fast-pizza-api.onrender.com/api/order",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(orderData),
+        }
+      );
 
       if (!response.ok) {
-        throw new Error("Failed to place order");
+        throw new Error(`Error: ${response.status}`);
       }
 
       const data = await response.json();
-      console.log("Order successful!", data);
-      navigate(`/order/${data.orderId}`);
+      console.log("Order created:", data);
+
+      navigate(`/order/${data.data.id}`);
     } catch (error) {
-      console.error("Error placing order:", error);
+      console.error("Failed to create order:", error);
     }
   };
 
@@ -62,7 +64,12 @@ const CreateOrder = () => {
         <div className="order-form">
           <div className="order-field">
             <p className="order-label">First Name</p>
-            <input type="text" value={userName} className="order-input" />
+            <input
+              type="text"
+              value={userName}
+              className="order-input"
+              readOnly
+            />
           </div>
 
           <div className="order-field">
@@ -81,7 +88,10 @@ const CreateOrder = () => {
               type="text"
               className="order-input"
               placeholder="Enter your delivery address"
-              onChange={(e) => dispatch(setAddress(e.target.value))}
+              onChange={(e) => {
+                console.log(e.target.value);
+                dispatch(setAddress(e.target.value));
+              }}
             />
           </div>
 
@@ -99,7 +109,7 @@ const CreateOrder = () => {
           </div>
         </div>
 
-        <button className="order-btn" onClick={handleOrderSubmit}>
+        <button className="order-btn" onClick={handleOrder}>
           ORDER NOW FOR €{finalPrice.toFixed(2)}
         </button>
       </div>

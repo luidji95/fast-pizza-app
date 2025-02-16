@@ -6,6 +6,7 @@ import Welcome from "./Components/Welcome";
 import Menu from "./Components/Menu";
 import Cart from "./Components/Cart";
 import CreateOreder from "./Components/CreateOreder";
+import OrderDetails from "./Components/OrderDetails";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
             <Route path="menu" element={<Menu />} />
             <Route path="cart" element={<Cart />} />
             <Route path="createOreder" element={<CreateOreder />} />
+            <Route path="order/:orderId" element={<OrderDetails />} />
           </Route>
         </Routes>
       </BrowserRouter>

@@ -5,6 +5,7 @@ import { selectTotalPrice } from "../Redux/Slices/cartSlice";
 import { useEffect } from "react";
 import "../CreateOrder.css";
 import { setAddress, setPhoneNumber } from "../Redux/Slices/userSlice";
+import { z } from "zod";
 
 const CreateOrder = () => {
   const navigate = useNavigate();
@@ -17,6 +18,17 @@ const CreateOrder = () => {
   const [isPriority, setIsPriority] = useState(false);
 
   const finalPrice = isPriority ? totalPrice + 3 : totalPrice;
+
+  const orderSchema = z.object({
+    customer: z
+      .string()
+      .min(2, "Customer name must have at least 2 characters"),
+    phone: z.coerce
+      .number()
+      .int()
+      .positive("Phone number must be a valid number"),
+    address: z.string().min(5, "Address must be at least 5 characters long"),
+  });
 
   const handleOrder = async () => {
     const orderData = {
@@ -33,6 +45,14 @@ const CreateOrder = () => {
       priority: isPriority,
     };
 
+    const validationResult = orderSchema.safeParse(orderData);
+
+    if (!validationResult.success) {
+      console.error("Validation failed: ", validationResult.error);
+      alert("Please check your input data and try again");
+      return;
+    }
+
     try {
       const response = await fetch(
         "https://react-fast-pizza-api.onrender.com/api/order",
@@ -44,6 +64,7 @@ const CreateOrder = () => {
       );
 
       if (!response.ok) {
+        console.log(await response.json());
         throw new Error(`Error: ${response.status}`);
       }
 

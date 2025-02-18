@@ -3,21 +3,35 @@ import "../Welcome.css";
 import { useDispatch, useSelector } from "react-redux";
 import { setUserConfirmed, setUsername } from "../Redux/Slices/userSlice";
 import { useNavigate } from "react-router-dom";
+import { z } from "zod";
 
 const Welcome = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
   const username = useSelector((state) => state.user.username);
+
   const [name, setName] = useState("");
   const [isButtonVisible, setIsButtonVisible] = useState(!!username);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleInputChange = (e) => {
     setName(e.target.value);
     setIsButtonVisible(e.target.value.trim().length > 0);
+    setErrorMessage("");
   };
 
+  const menuShemaValidation = z
+    .string()
+    .min(2, "Username must have at least 2 characters!");
+
   const handleStartOrdering = () => {
+    const validationUsername = menuShemaValidation.safeParse(name);
+
+    if (!validationUsername.success) {
+      setErrorMessage(validationUsername.error.errors[0].message);
+      return;
+    }
+
     dispatch(setUsername(name));
     dispatch(setUserConfirmed());
     navigate("/menu");
@@ -42,6 +56,7 @@ const Welcome = () => {
             value={name}
             onChange={handleInputChange}
           />
+          {errorMessage && <p className="error-text">{errorMessage}</p>}{" "}
         </>
       ) : (
         <p className="welcome-message">👋 Welcome back, {username}!</p>

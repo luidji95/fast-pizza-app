@@ -2,10 +2,11 @@ import { useSelector, useDispatch } from "react-redux";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { selectTotalPrice } from "../Redux/Slices/cartSlice";
-import { useEffect } from "react";
 import "../CreateOrder.css";
 import { setAddress, setPhoneNumber } from "../Redux/Slices/userSlice";
 import { z } from "zod";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const CreateOrder = () => {
   const navigate = useNavigate();
@@ -17,8 +18,13 @@ const CreateOrder = () => {
   const cartItems = useSelector((state) => state.cart.cartItems);
   const [isPriority, setIsPriority] = useState(false);
 
+  // Držimo state za greške inputa
+  const [phoneError, setPhoneError] = useState("");
+  const [addressError, setAddressError] = useState("");
+
   const finalPrice = isPriority ? totalPrice + 3 : totalPrice;
 
+  // Zod šema
   const orderSchema = z.object({
     customer: z
       .string()
@@ -45,11 +51,26 @@ const CreateOrder = () => {
       priority: isPriority,
     };
 
+    // Validacija inputa pomoću Zod-a
     const validationResult = orderSchema.safeParse(orderData);
 
     if (!validationResult.success) {
-      console.error("Validation failed: ", validationResult.error);
-      alert("Please check your input data and try again");
+      // Resetujemo prethodne greške
+      setPhoneError("");
+      setAddressError("");
+
+      // Iteriramo kroz sve greške i postavljamo odgovarajuće state-ove
+      validationResult.error.issues.forEach((issue) => {
+        if (issue.path.includes("phone")) {
+          setPhoneError(issue.message);
+        }
+        if (issue.path.includes("address")) {
+          setAddressError(issue.message);
+        }
+      });
+
+      // Opciona toast notifikacija za grešku
+      toast.error("Please check your input data and try again");
       return;
     }
 
@@ -97,9 +118,12 @@ const CreateOrder = () => {
             <p className="order-label">Phone number</p>
             <input
               type="text"
-              className="order-input"
-              placeholder="Enter your phone number"
-              onChange={(e) => dispatch(setPhoneNumber(e.target.value))}
+              className={`order-input ${phoneError ? "error-border" : ""}`}
+              placeholder={phoneError || "Enter your phone number"}
+              onChange={(e) => {
+                setPhoneError(""); // Reset greške pri unosu
+                dispatch(setPhoneNumber(e.target.value));
+              }}
             />
           </div>
 
@@ -107,10 +131,10 @@ const CreateOrder = () => {
             <p className="order-label">Address</p>
             <input
               type="text"
-              className="order-input"
-              placeholder="Enter your delivery address"
+              className={`order-input ${addressError ? "error-border" : ""}`}
+              placeholder={addressError || "Enter your delivery address"}
               onChange={(e) => {
-                console.log(e.target.value);
+                setAddressError(""); // Reset greške pri unosu
                 dispatch(setAddress(e.target.value));
               }}
             />

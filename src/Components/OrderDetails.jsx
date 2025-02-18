@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import "../OrderDetails.css"; // Obavezno dodaj ovaj CSS!
+import "../OrderDetails.css";
 
 const OrderDetails = () => {
   const { orderId } = useParams();
@@ -35,13 +35,11 @@ const OrderDetails = () => {
     <div className="order-details">
       <h2 className="order-title">Order #{order.id} status</h2>
 
-      {/* STATUS BADGES */}
       <div className="order-status">
         {order.priority && <span className="badge priority">PRIORITY</span>}
         <span className="badge preparing">PREPARING ORDER</span>
       </div>
 
-      {/* ESTIMATED DELIVERY */}
       <div className="order-estimate">
         <p>Only 52 minutes left 😊</p>
         <span>

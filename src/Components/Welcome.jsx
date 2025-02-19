@@ -25,6 +25,10 @@ const Welcome = () => {
     .min(2, "Username must have at least 2 characters!");
 
   const handleStartOrdering = () => {
+    if (username) {
+      navigate("/menu");
+      return;
+    }
     const validationUsername = menuShemaValidation.safeParse(name);
 
     if (!validationUsername.success) {

@@ -102,3 +102,39 @@
 .order-btn:hover {
   background: #e09c00;
 }
+
+.error-border {
+  border: 2px solid red;
+}
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-wrapper input {
+  width: 100%;
+  padding: 10px;
+  padding-right: 120px; /* Rezervisano mesto za dugme */
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.input-wrapper button {
+  position: absolute;
+  right: 5px;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: #333;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 3px;
+  font-size: 14px;
+}
+
+.input-wrapper button:hover {
+  background-color: #555;
+}

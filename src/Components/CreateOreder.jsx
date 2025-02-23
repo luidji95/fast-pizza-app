@@ -8,6 +8,21 @@ import { z } from "zod";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+// Funkcija koja parsira Zod greške i vraća objekat sa porukama grešaka
+const parseErrorsFromResponse = (error) => {
+  if (error instanceof z.ZodError) {
+    return error.issues.reduce(
+      (acc, issue) => {
+        if (issue.path.includes("phone")) acc.phone = issue.message;
+        if (issue.path.includes("address")) acc.address = issue.message;
+        return acc;
+      },
+      { phone: "", address: "" }
+    );
+  }
+  return null;
+};
+
 const CreateOrder = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -18,17 +33,48 @@ const CreateOrder = () => {
   const cartItems = useSelector((state) => state.cart.cartItems);
   const [isPriority, setIsPriority] = useState(false);
 
-  // Držimo state za greške inputa
-  const [phoneError, setPhoneError] = useState("");
-  const [addressError, setAddressError] = useState("");
+  const [zodErrors, setZodErrors] = useState({ phone: "", address: "" });
 
   const finalPrice = isPriority ? totalPrice + 3 : totalPrice;
 
-  // Zod šema
+  const getUserLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          const { latitude, longitude } = position.coords;
+
+          try {
+            const response = await fetch(
+              `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`
+            );
+            const data = await response.json();
+
+            if (data.display_name) {
+              dispatch(setAddress(data.display_name));
+            } else {
+              toast.error(
+                "Could not fetch address, using coordinates instead."
+              );
+              dispatch(setAddress(`Lat: ${latitude}, Lng: ${longitude}`));
+            }
+          } catch (error) {
+            console.error("Geocoding error:", error);
+            toast.error("Failed to fetch address. Please try again.");
+            dispatch(setAddress(`Lat: ${latitude}, Lng: ${longitude}`)); // Ako ne uspe, prikazuje koordinate
+          }
+        },
+        (error) => {
+          console.error("Error getting location:", error);
+          toast.error("Failed to get location. Please allow location access.");
+        }
+      );
+    } else {
+      toast.error("Geolocation is not supported by your browser.");
+    }
+  };
+
+  // Zod validacija
   const orderSchema = z.object({
-    customer: z
-      .string()
-      .min(2, "Customer name must have at least 2 characters"),
     phone: z.coerce
       .number()
       .int()
@@ -51,30 +97,10 @@ const CreateOrder = () => {
       priority: isPriority,
     };
 
-    // Validacija inputa pomoću Zod-a
-    const validationResult = orderSchema.safeParse(orderData);
-
-    if (!validationResult.success) {
-      // Resetujemo prethodne greške
-      setPhoneError("");
-      setAddressError("");
-
-      // Iteriramo kroz sve greške i postavljamo odgovarajuće state-ove
-      validationResult.error.issues.forEach((issue) => {
-        if (issue.path.includes("phone")) {
-          setPhoneError(issue.message);
-        }
-        if (issue.path.includes("address")) {
-          setAddressError(issue.message);
-        }
-      });
-
-      // Opciona toast notifikacija za grešku
-      toast.error("Please check your input data and try again");
-      return;
-    }
-
     try {
+      orderSchema.parse(orderData);
+      setZodErrors({ phone: "", address: "" });
+
       const response = await fetch(
         "https://react-fast-pizza-api.onrender.com/api/order",
         {
@@ -85,16 +111,29 @@ const CreateOrder = () => {
       );
 
       if (!response.ok) {
-        console.log(await response.json());
-        throw new Error(`Error: ${response.status}`);
+        const errorData = await response.json();
+        const error = new Error(
+          errorData.message || "Server error, order not created."
+        );
+        error.isCustom = true;
+        throw error;
       }
 
       const data = await response.json();
       console.log("Order created:", data);
-
       navigate(`/order/${data.data.id}`);
     } catch (error) {
-      console.error("Failed to create order:", error);
+      const parsedErrors = parseErrorsFromResponse(error);
+      if (parsedErrors) {
+        setZodErrors(parsedErrors);
+        toast.error("Please check your input data and try again!");
+      } else if (error.isCustom) {
+        console.error("Server error:", error.message);
+        toast.error("Something went wrong with the server. Try again later.");
+      } else {
+        console.error("Unexpected error:", error);
+        toast.error("An unexpected error occurred.");
+      }
     }
   };
 
@@ -118,26 +157,28 @@ const CreateOrder = () => {
             <p className="order-label">Phone number</p>
             <input
               type="text"
-              className={`order-input ${phoneError ? "error-border" : ""}`}
-              placeholder={phoneError || "Enter your phone number"}
-              onChange={(e) => {
-                setPhoneError(""); // Reset greške pri unosu
-                dispatch(setPhoneNumber(e.target.value));
-              }}
+              className={`order-input ${zodErrors.phone ? "error-border" : ""}`}
+              placeholder={zodErrors.phone || "Enter your phone number"}
+              onChange={(e) => dispatch(setPhoneNumber(e.target.value))}
             />
           </div>
 
           <div className="order-field">
             <p className="order-label">Address</p>
-            <input
-              type="text"
-              className={`order-input ${addressError ? "error-border" : ""}`}
-              placeholder={addressError || "Enter your delivery address"}
-              onChange={(e) => {
-                setAddressError(""); // Reset greške pri unosu
-                dispatch(setAddress(e.target.value));
-              }}
-            />
+            <div className="input-wrapper">
+              <input
+                type="text"
+                className={`order-input ${
+                  zodErrors.address ? "error-border" : ""
+                }`}
+                placeholder={zodErrors.address || "Enter your delivery address"}
+                value={address}
+                onChange={(e) => dispatch(setAddress(e.target.value))}
+              />
+              <button className="location-btn" onClick={getUserLocation}>
+                Get Position
+              </button>
+            </div>
           </div>
 
           <div className="order-priority">

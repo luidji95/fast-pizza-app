@@ -34,6 +34,6 @@ A fast and modern pizza ordering application built with **React** and **Redux To
 ## 📍 Contact & Links  
 📂 **GitHub:** [luidji95](https://github.com/luidji95)  
 📩 **Email:** milos.petrovic09.95@gmail.com  
-🐦 **Twitter/X:** [@DjuradjPetrovi1](https://twitter.com/DjuradjPetrovi1)  
+
 
 
